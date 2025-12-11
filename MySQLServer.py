@@ -29,12 +29,13 @@ def create_database():
             user=DB_USER,
             password=DB_PASSWORD,
             port=DB_PORT,
-            auth_plugin='mysql_native_password'  # Add this line
+            auth_plugin='mysql_native_password'
         )
 
         if connection.is_connected():
             cursor = connection.cursor()
 
+            # Use the database name from environment variable
             cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}")
 
             print(f"Database '{DB_NAME}' created successfully!")
@@ -43,19 +44,13 @@ def create_database():
 
     except Error as e:
         print(f"Error connecting to MySQL: {e}")
-        print("\nTroubleshooting suggestions:")
-        print("1. Try running in MySQL: ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Program512_121';")
-        print("2. Then run: FLUSH PRIVILEGES;")
-        print("3. Restart MySQL service if needed")
     except RuntimeError as re:
         print(re)
-    except Exception as e:
-        print(f"Unexpected error: {e}")
 
     finally:
         if connection and connection.is_connected():
             connection.close()
-            print("MySQL connection closed.")
+
 
 if __name__ == "__main__":
     create_database()
