@@ -36,7 +36,7 @@ def create_database():
             cursor = connection.cursor()
 
             # Use the database name from environment variable
-            cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}")
+            cursor.execute(f"CREATE DATABASE IF NOT EXISTS alx_book_store")
 
             print(f"Database '{DB_NAME}' created successfully!")
 
