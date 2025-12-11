@@ -5,24 +5,25 @@ If the database already exists, it won't fail
 """
 
 import os
-from dotenv import load_dotenv
 import mysql.connector
-from mysql.connector import Error
 
-load_dotenv()
+# Load environment variables
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    print("Warning: python-dotenv not installed. Using default values.")
+    print("Install with: pip install python-dotenv")
 
 def create_database():
     connection = None
 
     try:
         DB_HOST = os.getenv("DB_HOST", "localhost")
-        DB_USER = os.getenv("DB_USER")
-        DB_PASSWORD = os.getenv("DB_PASSWORD")
+        DB_USER = os.getenv("DB_USER", "root")
+        DB_PASSWORD = os.getenv("DB_PASSWORD", "Program512_121")
         DB_NAME = os.getenv("DB_NAME", "alx_book_store")
         DB_PORT = int(os.getenv("DB_PORT", 3306))
-
-        if not (DB_USER and DB_PASSWORD):
-            raise RuntimeError("Database credentials not found. Set DB_USER and DB_PASSWORD in .env or environment variables.")
 
         connection = mysql.connector.connect(
             host=DB_HOST,
@@ -35,22 +36,22 @@ def create_database():
         if connection.is_connected():
             cursor = connection.cursor()
 
-            # Use the database name from environment variable
-            cursor.execute(f"CREATE DATABASE IF NOT EXISTS alx_book_store")
+            # Create database if it doesn't exist
+            cursor.execute("CREATE DATABASE IF NOT EXISTS alx_book_store")
 
-            print(f"Database '{DB_NAME}' created successfully!")
+            print("Database 'alx_book_store' created successfully!")
 
             cursor.close()
 
-    except Error as e:
+    except mysql.connector.Error as e:
         print(f"Error connecting to MySQL: {e}")
-    except RuntimeError as re:
-        print(re)
-
+        
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        
     finally:
         if connection and connection.is_connected():
             connection.close()
-
 
 if __name__ == "__main__":
     create_database()
